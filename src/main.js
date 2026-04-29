@@ -9,7 +9,7 @@ let config = {
     },
     width: 600,
     height: 700,
-    scene: [] //put scnene class name here
+    scene: [GalleryShooter] //put scnene class name here
 }
 
 const game = new Phaser.Game(config);

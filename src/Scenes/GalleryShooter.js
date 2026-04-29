@@ -61,8 +61,110 @@ class GalleryShooter extends Phaser.Scene {
 
         //Enemy Sprite===================================================
 
+        this.enemies = this.add.group();
+        this.enemyGroupSpeed = 20;  
+        this.enemyGroupDirection = 1; //1 = right, -1 = left
 
+        this.createEnemyGrid(); //couldnt figure out a way to not have this method in the GalleryShooter file (wanted it in Enemy.js)
+    
+    }
 
+    createEnemyGrid() {
+        let startX = 120;
+        let startY = 80;
+
+        let cols = 7;
+        let rows = 3;
+
+        let xSpacing = 70;
+        let ySpacing = 60;
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                let x = startX + col * xSpacing;
+                let y = startY + row * ySpacing;
+
+                let enemyType;
+                let frame;
+
+                //back row has stronger enemies
+                if (row === 0) {
+                    enemyType = "back";
+                    frame = "playerShip3_red.png";
+                } 
+                //front rows have weaker enemies
+                else{
+                    enemyType = "front";
+                    frame = "playerShip1_red.png";
+                }
+
+                let enemy = new Enemy(
+                    this,
+                    x,
+                    y,
+                    "AlienShips",
+                    frame,
+                    enemyType
+                );
+
+                this.enemies.add(enemy);
+            }
+        }
+    }
+
+    updateEnemyGroup(delta) {
+        let enemies = this.enemies.getChildren();
+
+        if(enemies.length === 0){
+            return;
+        }
+
+        let leftMost = enemies[0];
+        let rightMost = enemies[0];
+
+        let isRun = false;
+
+    //find the left-most and right-most active enemy
+        for(let enemy of enemies){
+            if(isRun == false){
+                if(!enemy.active || enemy.isDiving){
+                    continue;
+                }
+
+                if(enemy.x < leftMost.x){
+                    leftMost = enemy;
+                }
+
+                if(enemy.x > rightMost.x){
+                rightMost = enemy;
+                }
+            }
+        }
+        isRun = true;
+
+        let moveAmount = this.enemyGroupSpeed * (delta / 1000);
+
+        //check if the group is about to hit the screen edge
+        if(rightMost.x >= this.game.config.width - 40){
+            this.enemyGroupDirection = -1;
+        }
+
+        if(leftMost.x <= 40){
+            this.enemyGroupDirection = 1;
+        }
+
+        //move only enemies that are still in the group
+        for(let enemy of enemies){
+            if(!enemy.active || enemy.isDiving){
+                continue;
+            }
+
+            enemy.x += moveAmount * this.enemyGroupDirection;
+
+            //update their home position
+            enemy.homeX = enemy.x;
+            enemy.homeY = enemy.y;
+        }
     }
 
     update(time, delta) {
@@ -72,7 +174,12 @@ class GalleryShooter extends Phaser.Scene {
 
         my.sprite.bulletP.update(time, delta);
 
- 
+        this.updateEnemyGroup(delta);
+
+        this.enemies.children.each((enemy) => {
+            enemy.update(time, delta);
+        });
+
 
     }
 }

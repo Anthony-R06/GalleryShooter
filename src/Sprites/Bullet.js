@@ -11,7 +11,6 @@ class Bullet extends Phaser.GameObjects.Sprite {
         this.space = key;
         this.bulletActive = false;
         this.visible = true;
-        this.
 
         scene.add.existing(this);
 
@@ -27,7 +26,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
             if (!this.bulletActive) {
                 this.scene.laserSound.play({
                 volume: 0.5 // Optional: adjust volume from 0 to 1
-            });
+                });
                 // Set the active flag to true
                 this.bulletActive = true;
                 // Set the position of the bullet to be the location of the player

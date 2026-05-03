@@ -17,7 +17,7 @@ class BulletE extends Phaser.GameObjects.Sprite {
         this.y = y;
 
         this.scene.laserSound.play({
-            volume: 0.5 // Optional: adjust volume from 0 to 1
+            volume: 0.5 
         });
 
         this.visible = true;

@@ -8,7 +8,7 @@ class GalleryShooter extends Phaser.Scene {
 
         this.load.setPath("./assets/");
 
-        // Load sprite atlas
+        //load sprite atlas
         this.load.atlasXML("AlienShips", "sheet.png", "sheet.xml");
 
         this.load.audio("laserSound", "laserSmall_002.ogg");
@@ -19,7 +19,7 @@ class GalleryShooter extends Phaser.Scene {
 
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
 
-                // For animation
+                //for animation
         this.load.spritesheet("explosionSheet", "Yellow Effect Bullet Impact Explosion 32x32.png", {
             frameWidth: 32,
             frameHeight: 32
@@ -125,7 +125,7 @@ class GalleryShooter extends Phaser.Scene {
         my.text.score = this.add.bitmapText(370, 660, "rocketSquare", "Score " + this.myScore);
         my.text.health = this.add.bitmapText(5, 660, "rocketSquare", "Health: ");
 
-        // Health system
+        //health system
         this.maxHealth = 3;
         this.playerHealth = 3;
 
@@ -318,7 +318,7 @@ class GalleryShooter extends Phaser.Scene {
 
                 if (enemyDied) {
                     this.hitSound.play({
-                        volume: 0.5 // Optional: adjust volume from 0 to 1
+                        volume: 0.5 
                     });
                     let boom = this.add.sprite(enemy.x, enemy.y, "explosionSheet");
                     boom.setScale(1.5);
@@ -336,7 +336,7 @@ class GalleryShooter extends Phaser.Scene {
             }
             if (enemy.active && this.collides(enemy, my.sprite.player)){
                 this.pHitSound.play({
-                volume: 0.5 // Optional: adjust volume from 0 to 1
+                volume: 0.5 
                 });
                 this.playerHealth -= 1;
                 enemy.takeDamage(2);
@@ -354,7 +354,7 @@ class GalleryShooter extends Phaser.Scene {
             boom1.play("playerExplosion");
 
             this.pDeathSound.play({
-                volume: 0.5 // Optional: adjust volume from 0 to 1
+                volume: 0.5 
                 });
 
             this.enemyShootTimer.remove(false);
@@ -374,7 +374,7 @@ class GalleryShooter extends Phaser.Scene {
             if (bullet.bulletActive && my.sprite.player.active && this.collides(bullet, my.sprite.player)) {
                 bullet.resetBullet();
                 this.pHitSound.play({
-                    volume: 0.5 // Optional: adjust volume from 0 to 1
+                    volume: 0.5 
                 });
                 this.playerHealth -= 1;
                 this.updateHealthBar();

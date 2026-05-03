@@ -13,8 +13,18 @@ class GalleryShooter extends Phaser.Scene {
 
         this.load.audio("laserSound", "laserSmall_002.ogg");
         this.load.audio("hitSound", "laserLarge_000.ogg");
+        this.load.audio("playerDeathSound", "explosionCrunch_000.ogg");
+        this.load.audio("playerHitSound","laserLarge_002.ogg");
+        this.load.audio("win", "WIN sound effect no copyright.mp3");
 
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
+
+                // For animation
+        this.load.spritesheet("explosionSheet", "Yellow Effect Bullet Impact Explosion 32x32.png", {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
     }
 
     create() {
@@ -26,6 +36,9 @@ class GalleryShooter extends Phaser.Scene {
 
         this.laserSound = this.sound.add("laserSound");
         this.hitSound = this.sound.add("hitSound");
+        this.pHitSound = this.sound.add("playerHitSound");
+        this.pDeathSound = this.sound.add("playerDeathSound");
+        this.winSound = this.sound.add("win");
 
 
         //BACKROUND======================================================
@@ -128,6 +141,43 @@ class GalleryShooter extends Phaser.Scene {
         this.healthBarWidth = 120;
 
         this.hKey = this.input.keyboard.addKey("H");
+
+        //Animation====================================================
+
+        let columns = 20;
+
+        let col = 6;
+        let row = 2;
+        let startFrame = row * columns + col;
+
+        this.anims.create({
+            key: "enemyExplosion",
+            frames: this.anims.generateFrameNumbers("explosionSheet", {
+            start: startFrame,
+            end: startFrame + 3
+            }),
+            frameRate: 12,
+            repeat: 0
+        });
+
+        let columns1 = 20;
+
+        let col1 = 16;
+        let row1 = 8;
+        let startFrame1 = row1 * columns1 + col1;
+
+        this.anims.create({
+            key: "playerExplosion",
+            frames: this.anims.generateFrameNumbers("explosionSheet", {
+            start: startFrame1,
+            end: startFrame1 + 3
+            }),
+            frameRate: 12,
+            repeat: 1
+        });
+
+
+
 
     
     }
@@ -263,14 +313,29 @@ class GalleryShooter extends Phaser.Scene {
 
         for (let enemy of this.enemies.getChildren()) { // || my.sprite.player != active
             if (enemy.active && my.sprite.bulletP.bulletActive && this.collides(enemy, my.sprite.bulletP)) {
-                enemy.takeDamage(1);
+
+                let enemyDied = enemy.takeDamage(1);
+
+                if (enemyDied) {
+                    this.hitSound.play({
+                        volume: 0.5 // Optional: adjust volume from 0 to 1
+                    });
+                    let boom = this.add.sprite(enemy.x, enemy.y, "explosionSheet");
+                    boom.setScale(1.5);
+                    boom.play("enemyExplosion");
+
+                    boom.on("animationcomplete", () => {
+                        boom.destroy();
+                    });
+                }
+
 
                 my.sprite.bulletP.x = this.my.sprite.player.x;
                 my.sprite.bulletP.y = this.my.sprite.player.y - this.my.sprite.player.displayHeight/2;
                 my.sprite.bulletP.bulletActive = false;
             }
             if (enemy.active && this.collides(enemy, my.sprite.player)){
-                this.hitSound.play({
+                this.pHitSound.play({
                 volume: 0.5 // Optional: adjust volume from 0 to 1
                 });
                 this.playerHealth -= 1;
@@ -278,21 +343,19 @@ class GalleryShooter extends Phaser.Scene {
                 this.updateHealthBar();
             }
         }
+        if(this.playerHealth <= 0 && !this.gameOver){
+            this.gameOver = true;
 
-        for (let bullet of this.enemyBullets.getChildren()) {
-            if (bullet.bulletActive && my.sprite.player.active && this.collides(bullet, my.sprite.player)) {
-                bullet.resetBullet();
-                this.hitSound.play({
+            my.sprite.player.visible = false;
+            my.sprite.bulletP.visible = false;
+
+            let boom1 = this.add.sprite(my.sprite.player.x, my.sprite.player.y, "explosionSheet");
+            boom1.setScale(1.5);
+            boom1.play("playerExplosion");
+
+            this.pDeathSound.play({
                 volume: 0.5 // Optional: adjust volume from 0 to 1
                 });
-                this.playerHealth -= 1;
-                this.updateHealthBar();
-
-            }
-        }
-
-        if ((this.allEnemiesDestroyed() || this.playerHealth <= 0) && !this.gameOver) {
-            this.gameOver = true;
 
             this.enemyShootTimer.remove(false);
             this.enemyDiveTimer.remove(false);
@@ -303,6 +366,38 @@ class GalleryShooter extends Phaser.Scene {
             }).setOrigin(0.5);
 
             this.time.delayedCall(1500, () => {
+                this.scene.restart();
+            });
+        }
+    
+        for (let bullet of this.enemyBullets.getChildren()) {
+            if (bullet.bulletActive && my.sprite.player.active && this.collides(bullet, my.sprite.player)) {
+                bullet.resetBullet();
+                this.pHitSound.play({
+                    volume: 0.5 // Optional: adjust volume from 0 to 1
+                });
+                this.playerHealth -= 1;
+                this.updateHealthBar();
+
+            }
+        }
+
+        if ((this.allEnemiesDestroyed()) && !this.gameOver) {
+            this.gameOver = true;
+
+            this.enemyShootTimer.remove(false);
+            this.enemyDiveTimer.remove(false);
+
+            this.winSound.play({
+                volume: 0.5
+            });
+
+            this.add.text(300, 350, "YOU WIN!!, Restarting...", {
+                fontSize: "32px",
+                color: "#ffffff"
+            }).setOrigin(0.5);
+
+            this.time.delayedCall(2000, () => {
                 this.scene.restart();
             });
         }

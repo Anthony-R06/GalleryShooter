@@ -1,7 +1,7 @@
-class Player extends Phaser.GameObjects.Sprite {
+class Player extends Phaser.GameObjects.Sprite{
 
 
-    constructor(scene, x, y, texture, frame, leftKey, rightKey, playerSpeed) {
+    constructor(scene, x, y, texture, frame, leftKey, rightKey, playerSpeed){
         super(scene, x, y, texture, frame);
 
         this.left = leftKey;
@@ -13,18 +13,18 @@ class Player extends Phaser.GameObjects.Sprite {
         return this;
     }
 
-    update(time, delta) {
+    update(time, delta){
         let dt = delta / 1000;
 
-        if (this.left.isDown) {
+        if(this.left.isDown){
 
-            if (this.x > (this.displayWidth/2)) {
+            if(this.x > (this.displayWidth/2)){
                 this.x -= this.playerSpeed * dt;
             }
         }
 
-        if (this.right.isDown) {
-            if (this.x < (game.config.width - (this.displayWidth/2))) {
+        if(this.right.isDown){
+            if(this.x < (game.config.width - (this.displayWidth/2))){
                 this.x += this.playerSpeed * dt;
             }
         }

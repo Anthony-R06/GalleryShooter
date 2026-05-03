@@ -1,5 +1,5 @@
-class BulletE extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, speed) {
+class BulletE extends Phaser.GameObjects.Sprite{
+    constructor(scene, x, y, texture, frame, speed){
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
@@ -12,7 +12,7 @@ class BulletE extends Phaser.GameObjects.Sprite {
         this.setScale(0.5);
     }
 
-    shoot(x, y) {
+    shoot(x, y){
         this.x = x;
         this.y = y;
 
@@ -24,7 +24,7 @@ class BulletE extends Phaser.GameObjects.Sprite {
         this.bulletActive = true;
     }
 
-    resetBullet() {
+    resetBullet(){
         this.x = -100;
         this.y = -100;
 
@@ -32,14 +32,14 @@ class BulletE extends Phaser.GameObjects.Sprite {
         this.bulletActive = false;
     }
 
-    update(time, delta) {
-        if (!this.bulletActive) {
+    update(time, delta){
+        if(!this.bulletActive){
             return;
         }
 
         this.y += this.speed * (delta / 1000);
 
-        if (this.y > this.scene.game.config.height + 20) {
+        if(this.y > this.scene.game.config.height + 20){
             this.resetBullet();
         }
     }

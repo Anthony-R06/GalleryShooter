@@ -1,5 +1,5 @@
-class Enemy extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, enemyType) {
+class Enemy extends Phaser.GameObjects.Sprite{
+    constructor(scene, x, y, texture, frame, enemyType){
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
@@ -18,19 +18,20 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         this.angle = 180;
 
-        if (enemyType === "front") {
+        if(enemyType === "front"){
             this.health = 1;
             this.points = 10;
             this.setScale(0.4);
-        } else if (enemyType === "back") {
+        } 
+        else if(enemyType === "back"){
             this.health = 2;
             this.points = 20;
             this.setScale(0.5);
         }
     }
 
-    startDive() {
-        if (this.isDiving) {
+    startDive(){
+        if(this.isDiving){
             return;
         }
 
@@ -56,10 +57,16 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.EnemyPath = new Phaser.Curves.Spline(points);
     }
     
-    takeDamage(amount) {
+    takeDamage(amount){
         this.health -= amount;
 
-        if (this.health <= 0) {
+        if(this.health == 1){
+            this.scene.impact.play({
+                volume: 0.5
+            });
+        }
+
+        if(this.health <= 0){
             this.scene.myScore += this.points;
             this.scene.my.text.score.setText("Score " + this.scene.myScore);
 
@@ -70,11 +77,11 @@ class Enemy extends Phaser.GameObjects.Sprite {
         return false;
     }
 
-    update(time, delta) {
-        if (this.isDiving) {
+    update(time, delta){
+        if (this.isDiving){
             this.pathProgress += delta / this.diveDuration;
 
-            if (this.pathProgress >= 1) {
+            if(this.pathProgress >= 1){
                 this.pathProgress = 1;
                 this.isDiving = false;
 
@@ -86,7 +93,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
             let nextProgress = this.pathProgress + 0.01;
 
-            if (nextProgress > 1) {
+            if(nextProgress > 1){
                 nextProgress = 1;
             }
 

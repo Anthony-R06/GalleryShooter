@@ -1,6 +1,6 @@
 class Bullet extends Phaser.GameObjects.Sprite {
 
-    constructor(scene, x, y, texture, frame, bulletSpeed, key) {
+    constructor(scene, x, y, texture, frame, bulletSpeed, key){
         super(scene, x, y, texture, frame);
 
         this.bulletSpeed = bulletSpeed;
@@ -13,12 +13,12 @@ class Bullet extends Phaser.GameObjects.Sprite {
         return this;
     }
 
-    update(time, delta) {
+    update(time, delta){
         let dt = delta / 1000;
 
-        if (Phaser.Input.Keyboard.JustDown(this.space)) {
+        if (Phaser.Input.Keyboard.JustDown(this.space)){
 
-            if (!this.bulletActive) {
+            if (!this.bulletActive){
                 this.scene.laserSound.play({
                 volume: 0.5 
                 });
@@ -27,16 +27,16 @@ class Bullet extends Phaser.GameObjects.Sprite {
             }
         }
 
-        if (!this.bulletActive) {
+        if (!this.bulletActive){
                 this.x = this.scene.my.sprite.player.x;
                 this.y = this.scene.my.sprite.player.y - this.scene.my.sprite.player.displayHeight/2;
         }
 
 
-        if (this.bulletActive) {
+        if (this.bulletActive){
             this.y -= this.bulletSpeed * dt;
 
-            if (this.y < -(this.height/2)) {
+            if (this.y < -(this.height/2)){
 
                 this.x = this.scene.my.sprite.player.x;
                 this.y = this.scene.my.sprite.player.y - this.scene.my.sprite.player.displayHeight/2;

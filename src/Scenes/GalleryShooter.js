@@ -1,10 +1,10 @@
-class GalleryShooter extends Phaser.Scene {
-    constructor() {
+class GalleryShooter extends Phaser.Scene{
+    constructor(){
         super("galleryShooter");
         this.my = { sprite: {}, text: {} };
     }
 
-    preload() {
+    preload(){
 
         this.load.setPath("./assets/");
 
@@ -16,6 +16,7 @@ class GalleryShooter extends Phaser.Scene {
         this.load.audio("playerDeathSound", "explosionCrunch_000.ogg");
         this.load.audio("playerHitSound","laserLarge_002.ogg");
         this.load.audio("win", "WIN sound effect no copyright.mp3");
+        this.load.audio("bigImpact","laserSmall_004.ogg");
 
         this.load.bitmapFont("rocketSquare", "KennyRocketSquare_0.png", "KennyRocketSquare.fnt");
 
@@ -27,7 +28,7 @@ class GalleryShooter extends Phaser.Scene {
 
     }
 
-    create() {
+    create(){
 
 
         this.gameOver = false;
@@ -39,6 +40,7 @@ class GalleryShooter extends Phaser.Scene {
         this.pHitSound = this.sound.add("playerHitSound");
         this.pDeathSound = this.sound.add("playerDeathSound");
         this.winSound = this.sound.add("win");
+        this.impact = this.sound.add("bigImpact");
 
 
         //BACKROUND======================================================
@@ -50,7 +52,7 @@ class GalleryShooter extends Phaser.Scene {
         let stars = this.add.graphics();
 
         //spawn 119 stars randomly across the canvas
-        for (let i = 0; i < 120; i++) {
+        for(let i = 0; i < 120; i++){
             let x = Phaser.Math.Between(0, 600);
             let y = Phaser.Math.Between(0, 700);
 
@@ -96,7 +98,7 @@ class GalleryShooter extends Phaser.Scene {
 
         this.enemyBullets = this.add.group();
 
-        for (let i = 0; i < 10; i++) {
+        for(let i = 0; i < 10; i++){
             let bullet = new BulletE(
                 this,
                 -100,
@@ -182,7 +184,7 @@ class GalleryShooter extends Phaser.Scene {
     
     }
 
-    createEnemyGrid() {
+    createEnemyGrid(){
         let startX = 120;
         let startY = 80;
 
@@ -192,8 +194,8 @@ class GalleryShooter extends Phaser.Scene {
         let xSpacing = 70;
         let ySpacing = 60;
 
-        for (let row = 0; row < rowMax; row++) {
-            for (let col = 0; col < colMax; col++) {
+        for(let row = 0; row < rowMax; row++){
+            for(let col = 0; col < colMax; col++){
                 let x = startX + col * xSpacing;
                 let y = startY + row * ySpacing;
 
@@ -201,7 +203,7 @@ class GalleryShooter extends Phaser.Scene {
                 let frame;
 
                 //back row has stronger enemies
-                if (row === 0) {
+                if(row === 0){
                     enemyType = "back";
                     frame = "playerShip3_red.png";
                 } 
@@ -224,7 +226,7 @@ class GalleryShooter extends Phaser.Scene {
         }
     }
 
-    updateEnemyGroup(delta) {
+    updateEnemyGroup(delta){
         let enemies = this.enemies.getChildren();
 
         if(enemies.length === 0){
@@ -278,20 +280,20 @@ class GalleryShooter extends Phaser.Scene {
             enemy.homeY = enemy.y;
         }
     }
-    updateHealthBar() {
+    updateHealthBar(){
         let healthPercent = this.playerHealth / this.maxHealth;
 
-        if (healthPercent < 0) {
+        if(healthPercent < 0){
             healthPercent = 0;
         }
 
         this.healthBarFill.width = this.healthBarWidth * healthPercent;
     }
 
-    update(time, delta) {
+    update(time, delta){
         let my = this.my;
 
-        if (this.gameOver) {
+        if(this.gameOver){
             return;
         }
 
@@ -311,12 +313,12 @@ class GalleryShooter extends Phaser.Scene {
             }
         });
 
-        for (let enemy of this.enemies.getChildren()) { // || my.sprite.player != active
-            if (enemy.active && my.sprite.bulletP.bulletActive && this.collides(enemy, my.sprite.bulletP)) {
+        for(let enemy of this.enemies.getChildren()){ // || my.sprite.player != active
+            if(enemy.active && my.sprite.bulletP.bulletActive && this.collides(enemy, my.sprite.bulletP)){
 
                 let enemyDied = enemy.takeDamage(1);
 
-                if (enemyDied) {
+                if(enemyDied){
                     this.hitSound.play({
                         volume: 0.5 
                     });
@@ -334,7 +336,7 @@ class GalleryShooter extends Phaser.Scene {
                 my.sprite.bulletP.y = this.my.sprite.player.y - this.my.sprite.player.displayHeight/2;
                 my.sprite.bulletP.bulletActive = false;
             }
-            if (enemy.active && this.collides(enemy, my.sprite.player)){
+            if(enemy.active && this.collides(enemy, my.sprite.player)){
                 this.pHitSound.play({
                 volume: 0.5 
                 });
@@ -370,8 +372,8 @@ class GalleryShooter extends Phaser.Scene {
             });
         }
     
-        for (let bullet of this.enemyBullets.getChildren()) {
-            if (bullet.bulletActive && my.sprite.player.active && this.collides(bullet, my.sprite.player)) {
+        for(let bullet of this.enemyBullets.getChildren()){
+            if(bullet.bulletActive && my.sprite.player.active && this.collides(bullet, my.sprite.player)){
                 bullet.resetBullet();
                 this.pHitSound.play({
                     volume: 0.5 
@@ -382,7 +384,7 @@ class GalleryShooter extends Phaser.Scene {
             }
         }
 
-        if ((this.allEnemiesDestroyed()) && !this.gameOver) {
+        if((this.allEnemiesDestroyed()) && !this.gameOver){
             this.gameOver = true;
 
             this.enemyShootTimer.remove(false);
@@ -402,38 +404,38 @@ class GalleryShooter extends Phaser.Scene {
             });
         }
         /*
-        if (Phaser.Input.Keyboard.JustDown(this.hKey)) {
+        if(Phaser.Input.Keyboard.JustDown(this.hKey)){
             this.playerHealth -= 1;
             this.updateHealthBar();
         }
         */
 
         /*
-        if (Phaser.Input.Keyboard.JustDown(this.gKey)) {
+        if(Phaser.Input.Keyboard.JustDown(this.gKey)){
             this.sendRandomEnemyDiving();
         }
         */  
     }
         
-    randomEnemyShoot() {
+    randomEnemyShoot(){
 
-        if (this.gameOver) {
+        if(this.gameOver){
                 return;
         }
 
         let livingEnemies = this.enemies.getChildren().filter(enemy => {
             return enemy.active;
         });
-        if (livingEnemies.length === 0) {
+        if(livingEnemies.length === 0){
             return;
         }
         let randomEnemy = Phaser.Utils.Array.GetRandom(livingEnemies);
         this.shootEnemyBullet(randomEnemy);
     }
 
-    shootEnemyBullet(enemy) {
-        for (let bullet of this.enemyBullets.getChildren()) {
-            if (!bullet.bulletActive) {
+    shootEnemyBullet(enemy){
+        for(let bullet of this.enemyBullets.getChildren()){
+            if(!bullet.bulletActive){
 
                 bullet.shoot(enemy.x, enemy.y + enemy.displayHeight / 2);
                 return;
@@ -441,9 +443,9 @@ class GalleryShooter extends Phaser.Scene {
         }
     }
 
-    sendRandomEnemyDiving() {
+    sendRandomEnemyDiving(){
 
-        if (this.gameOver) {
+        if(this.gameOver){
             return;
         }
 
@@ -451,7 +453,7 @@ class GalleryShooter extends Phaser.Scene {
             return enemy.active && !enemy.isDiving;
         });
 
-        if (livingEnemies.length === 0) {
+        if(livingEnemies.length === 0){
             return;
         }
 
@@ -459,7 +461,7 @@ class GalleryShooter extends Phaser.Scene {
         randomEnemy.startDive();
     }
 
-    allEnemiesDestroyed() {
+    allEnemiesDestroyed(){
         for(let enemy of this.enemies.getChildren()){
             if(enemy.active){
             return false;
